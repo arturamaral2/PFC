@@ -34,7 +34,7 @@ C = [0 0 1 0 ]
 
 D = [0]
 
-% sistema 
+%% sistema 
 sys = ss(A,B,C,D)
 [a,b] = ss2tf(A,B,C,D)
-tf_sistema = tf(a,b)
+G  = tf(a,b)
