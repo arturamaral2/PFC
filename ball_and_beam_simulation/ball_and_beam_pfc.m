@@ -47,6 +47,8 @@ E = eig(A)
 sys = ss(A,B,C,D)
 [a,b] = ss2tf(A,B,C,D)
 F  = tf(a,b)
+F0 = a(5)/b(5) % funcao de transferencia com S avaliado em zero
+ganho_entrada = (Kg * Ki *N_total * L)/(Rm * d) 
 
 %% Projeto de controlador LQR
 
@@ -56,7 +58,7 @@ R = 0.7;
 P = icare(A,B,Q,R)
 K = (R^-1)*transpose(B)*P
 K2 = lqr(A,B,Q,R)
-F0 = a(5)/b(5) % funcao de transferencia com S avaliado em zero
+
 M = (F0^-1)*transpose(K)*(K*transpose(K))^-1
 
 

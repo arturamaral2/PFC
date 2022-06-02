@@ -5,3 +5,6 @@
 *.blg
 *.bbl
 *.gz
+*.mat 
+*.xml
+*.htm
