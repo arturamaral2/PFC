@@ -8,3 +8,5 @@
 *.mat 
 *.xml
 *.htm
+ ball_and_beam_simulation/slprj/* 
+ ball_and_beam_simulation/*.slsx
