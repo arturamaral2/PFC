@@ -101,4 +101,49 @@ M_alocacao = (F0^-1)*transpose(K_alocacao)*(K_alocacao*transpose(K_alocacao))^-1
 F_lqr_malha_fechada  = tf(a2,b2)
 
 
+%% seguimento de referencia erro nulo  LQR
 
+A_nulo = [A; 
+          C]
+coluna_nula = zeros(5,1)
+A_nulo = [A_nulo coluna_nula]
+
+B_nulo = [B; 
+     0]
+C_nulo = [C 1]
+r_nulo = [0;0;0;0;-1]
+z_nulo = C_nulo - r_nulo
+
+Q_nulo = eye(5);
+R = 0.5;
+% equação de riccati
+P_nulo = icare(A_nulo,B_nulo,Q_nulo,R)
+K_nulo = (R^-1)*transpose(B_nulo)*P_nulo
+M_nulo = (F0^-1)*transpose(K_nulo)*(K_nulo*transpose(K_nulo))^-1
+
+
+k_seguimento_lqr = K_nulo(1:4)
+ki_seguimento_lqr = K_nulo(5)
+
+%% seguimento nulo alocacao 
+nulvec = [0; 0; 0; 0]
+
+pb = [-0.3 -2.5 -5 -10 -11]
+kb_seguimento_alocacao = acker(A_nulo, B_nulo, pb)
+k_seguimento_alocacao = kb_seguimento_alocacao(1:4)
+ki_seguimento_alocacao = kb_seguimento_alocacao(5)
+
+
+
+Az = [A-B*k_seguimento_lqr B*ki_seguimento_lqr; -C 0];
+bz = [nulvec ;1];
+cz = [C 0 ];
+dz = 0 ;
+
+%t = 0:1:100;
+
+%step(Az,bz,cz,dz,1,t)
+
+
+open('lqr_nao_linear_simulink.slx')
+sim('lqr_nao_linear_simulink.slx')
