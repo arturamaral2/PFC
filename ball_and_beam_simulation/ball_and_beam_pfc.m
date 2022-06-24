@@ -21,6 +21,12 @@ N_total = N_motor + N_gearbox;
 Jv =  (1/2) * mv * L^2;
 
 
+amplitude_entrada = 1;
+bool_degrau = 1;
+bool_sine = 0;
+bool_linear = 0; 
+
+
 % tensões no ponto de operacao
 V = ((L*mv*g/2) + mb*g*delta ) * ((Rm * d)/ (L * Kg * Ki * N_total) )
 
@@ -140,10 +146,24 @@ bz = [nulvec ;1];
 cz = [C 0 ];
 dz = 0 ;
 
-%t = 0:1:100;
+%% Observador de estados 
+polo_mais_rapido_do_sistema = min(real(eig(A)))
 
-%step(Az,bz,cz,dz,1,t)
+polo_de_f = 1.5 * polo_mais_rapido_do_sistema
+sistema_f = (s - polo_de_f)^length(A)
+dem = sym2poly(sistema_f)
+
+tf_sistema = tf(1,dem)
+[num, dem] = tfdata(tf_sistema, 'v')
+[F,lixo1,lixo2,lixo3] = tf2ss(num,dem)
 
 
-open('lqr_nao_linear_simulink.slx')
-sim('lqr_nao_linear_simulink.slx')
+Lchp = [0; 0; 0; 1]
+
+estados_incontrolaveis = length(A) - rank(ctrb(F,Lchp))
+
+
+T = lyap(F, -A,Lchp*C)
+L_observador = inv(T)*Lchp
+ 
+
