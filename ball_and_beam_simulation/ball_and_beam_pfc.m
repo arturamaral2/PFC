@@ -21,6 +21,7 @@ N_total = N_motor + N_gearbox;
 Jv =  (1/2) * mv * L^2;
 
 
+
 amplitude_entrada = 1;
 bool_degrau = 1;
 bool_sine = 0;
@@ -166,4 +167,8 @@ estados_incontrolaveis = length(A) - rank(ctrb(F,Lchp))
 T = lyap(F, -A,Lchp*C)
 L_observador = inv(T)*Lchp
  
+
+%% MPC 
+mpc1 = load('mpc_session_designer_ball_and_beam_linear.mat')
+mpc1 = mpc1.MPCDesignerSession.AppData.Controllers.MPC 
 
