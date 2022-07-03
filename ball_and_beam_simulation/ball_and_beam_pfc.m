@@ -74,7 +74,7 @@ E = eig(A)
 
 sys = ss(A,B,C,D)
 [a,b] = ss2tf(A,B,C,D)
-F  = tf(a,b)
+transfer_function_ball_and_beam = tf(a,b)
 F0 = a(5)/b(5) % funcao de transferencia com S avaliado em zero
  
 
@@ -129,8 +129,8 @@ K_nulo = (R^-1)*transpose(B_nulo)*P_nulo
 M_nulo = (F0^-1)*transpose(K_nulo)*(K_nulo*transpose(K_nulo))^-1
 
 
-k_seguimento_lqr = K_nulo(1:4)
-ki_seguimento_lqr = K_nulo(5)
+k_seguimento = K_nulo(1:4)
+ki_seguimento = K_nulo(5)
 
 %% seguimento nulo alocacao 
 nulvec = [0; 0; 0; 0]
@@ -142,7 +142,7 @@ ki_seguimento_alocacao = kb_seguimento_alocacao(5)
 
 
 
-Az = [A-B*k_seguimento_lqr B*ki_seguimento_lqr; -C 0];
+Az = [A-B*k_seguimento B*ki_seguimento; -C 0];
 bz = [nulvec ;1];
 cz = [C 0 ];
 dz = 0 ;
@@ -171,4 +171,26 @@ L_observador = inv(T)*Lchp
 %% MPC 
 mpc1 = load('mpc_session_designer_ball_and_beam_linear.mat')
 mpc1 = mpc1.MPCDesignerSession.AppData.Controllers.MPC 
+
+mpc_no_linear = load('mpc_session_designer_ball_and_beam_linear.mat')
+mpc_no_linear = mpc_no_linear.MPCDesignerSession.AppData.Controllers.MPC 
+
+
+%% PID 
+kp =-10 
+ki =-15
+kd = 1
+
+%% metricas de desempenho
+
+model ='model_linear';
+open_system(model)
+in = Simulink.SimulationInput(model);
+sim(in)
+Time = out.u_output.Time; 
+y_out  = out.y_output.Data;
+u_out = out.u_output.Data;
+acao_controle = out.acao_controle.Data;
+Time_acao_controle = out.acao_controle.Time;
+
 
