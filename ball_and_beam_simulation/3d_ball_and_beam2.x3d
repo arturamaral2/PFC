@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE X3D PUBLIC "ISO//Web3D//DTD X3D 3.3//EN" "http://www.web3d.org/specifications/x3d-3.3.dtd">
+<X3D profile='Immersive' version='3.3' xmlns:xsd='http://www.w3.org/2001/XMLSchema-instance' xsd:noNamespaceSchemaLocation='http://www.web3d.org/specifications/x3d-3.3.xsd'>
+<head>
+</head>
+<Scene>
+<Transform DEF='Ball'  translation='0 8 0' bboxSize='-10 -10 -10'>
+  <Shape bboxSize='-2 -2 -2'>
+    <Appearance>
+      <Material specularColor='0.6 0 0.8' emissiveColor='0 0 0.4' diffuseColor='0.2 0 0.2'>
+      </Material>
+    </Appearance>
+    <Sphere radius='2'>
+    </Sphere>
+  </Shape>
+</Transform>
+<Viewpoint DEF='viempoint_1'  fieldOfView='0.7854' orientation='-0.4239585 0.8767996 0.2268957 1.096039' position='30 30 20'>
+</Viewpoint>
+<SpotLight location='0 10 0' cutOffAngle='1.570796' beamWidth='0.7854' intensity='10'>
+</SpotLight>
+<Background skyColor='0.8 0.8 0.8'>
+</Background>
+<Transform DEF='ground' >
+  <Shape>
+    <Appearance>
+      <TextureTransform>
+      </TextureTransform>
+      <ImageTexture url='"*sl3dlib\\objects\\Textures\\General\\Wood_Tan.png" '>
+      </ImageTexture>
+      <Material>
+      </Material>
+    </Appearance>
+    <Box size='50 1 50'>
+    </Box>
+  </Shape>
+</Transform>
+<Viewpoint orientation='0 0 0 0' position='0 10 40'>
+</Viewpoint>
+<Transform DEF='beam'  translation='0 5 0'>
+  <Shape>
+    <Appearance>
+      <ImageTexture url='"*sl3dlib\\objects\\Textures\\General\\Metal_Corrugated.png" '>
+      </ImageTexture>
+      <Material>
+      </Material>
+    </Appearance>
+    <Box size='30 2 3'>
+    </Box>
+  </Shape>
+</Transform>
+<Transform DEF='haste'  translation='-14 2 0'>
+  <Shape>
+    <Appearance>
+      <ImageTexture url='"*sl3dlib\\objects\\Textures\\General\\Metal_Corrugated.png" '>
+      </ImageTexture>
+      <Material>
+      </Material>
+    </Appearance>
+    <Box size='2 4 3'>
+    </Box>
+  </Shape>
+</Transform>
+</Scene>
+</X3D>

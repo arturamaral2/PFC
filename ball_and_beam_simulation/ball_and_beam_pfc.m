@@ -29,9 +29,9 @@ bool_linear = 0;
 
 
 % tensões no ponto de operacao
-V = ((L*mv*g/2) + mb*g*delta ) * ((Rm * d)/ (L * Kg * Ki * N_total) )
+V = ((L*mv*g/2) + mb*g*delta ) * ((Rm * d)/ (L * Kg * Ki * N_total) );
 
-V2 = ((L*mv*g/2) + mb*g*delta ) * ((Rm * L)/ (d * Kg * Ki * N_total) )
+V2 = ((L*mv*g/2) + mb*g*delta ) * ((Rm * L)/ (d * Kg * Ki * N_total) );
 
 %%  representação espaço estados 
 
@@ -41,18 +41,18 @@ a41 = -5*g/7;
 b21 = ((Kg*Ki*N_total)/(Rm* (Jv + (mb*(delta^2) )))) * (L/d);
 
 % modelagem pela tensão 
-ganho_entrada_antigo = ((Kg*Ki*N_total)/(Rm)) *(L/d)
-ganho_angulo_antigo = (((Kg^2)*Km*Ki*N_total)/(Rm)) * ((L^2)/(d^2))
+ganho_entrada_antigo = ((Kg*Ki*N_total)/(Rm)) *(L/d);
+ganho_angulo_antigo = (((Kg^2)*Km*Ki*N_total)/(Rm)) * ((L^2)/(d^2));
 
-ganho_entrada = Ki/Rm 
-ganho_angulo = (Ki*Km/Rm)
+ganho_entrada = Ki/Rm; 
+ganho_angulo = (Ki*Km/Rm);
 
-a22 = - ganho_angulo_antigo/(Jv + mb * delta^2 )
-b21 = ganho_entrada_antigo /(Jv + mb * delta^2 )
+a22 = - ganho_angulo_antigo/(Jv + mb * delta^2 );
+b21 = ganho_entrada_antigo /(Jv + mb * delta^2 );
 
 
-a22_novo = - ganho_angulo /(Jv + mb * delta^2 ) 
-b21_novo =  ganho_entrada/(Jv + mb * delta^2 )
+a22_novo = - ganho_angulo /(Jv + mb * delta^2 ) ;
+b21_novo =  ganho_entrada/(Jv + mb * delta^2 );
 
 
 A = [ 0 1 0  0 ; 
@@ -72,10 +72,10 @@ D = [0];
 E = eig(A)
 %% sistema em função de transferencia
 
-sys = ss(A,B,C,D)
-[a,b] = ss2tf(A,B,C,D)
-transfer_function_ball_and_beam = tf(a,b)
-F0 = a(5)/b(5) % funcao de transferencia com S avaliado em zero
+sys = ss(A,B,C,D);
+[a,b] = ss2tf(A,B,C,D);
+transfer_function_ball_and_beam = tf(a,b);
+F0 = a(5)/b(5); % funcao de transferencia com S avaliado em zero
  
 
 %% Projeto de controlador LQR
@@ -83,18 +83,18 @@ F0 = a(5)/b(5) % funcao de transferencia com S avaliado em zero
 Q  = eye(4);
 R = 0.5;
 % equação de riccati
-P = icare(A,B,Q,R)
-K = (R^-1)*transpose(B)*P
-K2 = lqr(A,B,Q,R)
+P = icare(A,B,Q,R);
+K = (R^-1)*transpose(B)*P;
+K2 = lqr(A,B,Q,R);
 
-M = (F0^-1)*transpose(K)*(K*transpose(K))^-1
+M = (F0^-1)*transpose(K)*(K*transpose(K))^-1;
 
 %% Projeto controlador alocação de polos
 
-p= [-0.3 -2.5 -5 -10]
-K_alocacao = place(A,B,p)
-l = place(A',C',p)
-M_alocacao = (F0^-1)*transpose(K_alocacao)*(K_alocacao*transpose(K_alocacao))^-1
+p= [-0.3 -2.5 -5 -10];
+K_alocacao = place(A,B,p);
+l = place(A',C',p);
+M_alocacao = (F0^-1)*transpose(K_alocacao)*(K_alocacao*transpose(K_alocacao))^-1;
 
 %K_alocacao = [k0 k1 k2 k3]
 %I = eye(4)
@@ -104,41 +104,38 @@ M_alocacao = (F0^-1)*transpose(K_alocacao)*(K_alocacao*transpose(K_alocacao))^-1
 %polos_alocao = solve(eqn,s)
 
 
-[a2,b2] = ss2tf(A-B*K, B*K*M ,C-D*K,D*K*M)
-F_lqr_malha_fechada  = tf(a2,b2)
+[a2,b2] = ss2tf(A-B*K, B*K*M ,C-D*K,D*K*M);
+F_lqr_malha_fechada  = tf(a2,b2);
 
 
 %% seguimento de referencia erro nulo  LQR
 
-A_nulo = [A; 
-          C]
-coluna_nula = zeros(5,1)
-A_nulo = [A_nulo coluna_nula]
-
-B_nulo = [B; 
-     0]
-C_nulo = [C 1]
-r_nulo = [0;0;0;0;-1]
-z_nulo = C_nulo - r_nulo
+A_nulo = [A; C];
+coluna_nula = zeros(5,1);
+A_nulo = [A_nulo coluna_nula];
+B_nulo = [B; 0];
+C_nulo = [C 1];
+r_nulo = [0;0;0;0;-1];
+z_nulo = C_nulo - r_nulo;
 
 Q_nulo = eye(5);
 R = 0.5;
 % equação de riccati
-P_nulo = icare(A_nulo,B_nulo,Q_nulo,R)
-K_nulo = (R^-1)*transpose(B_nulo)*P_nulo
-M_nulo = (F0^-1)*transpose(K_nulo)*(K_nulo*transpose(K_nulo))^-1
+P_nulo = icare(A_nulo,B_nulo,Q_nulo,R);
+K_nulo = (R^-1)*transpose(B_nulo)*P_nulo;
+M_nulo = (F0^-1)*transpose(K_nulo)*(K_nulo*transpose(K_nulo))^-1;
 
 
-k_seguimento = K_nulo(1:4)
-ki_seguimento = K_nulo(5)
+k_seguimento = K_nulo(1:4);
+ki_seguimento = K_nulo(5);
 
 %% seguimento nulo alocacao 
-nulvec = [0; 0; 0; 0]
+nulvec = [0; 0; 0; 0];
 
-pb = [-0.3 -2.5 -5 -10 -11]
-kb_seguimento_alocacao = acker(A_nulo, B_nulo, pb)
-k_seguimento_alocacao = kb_seguimento_alocacao(1:4)
-ki_seguimento_alocacao = kb_seguimento_alocacao(5)
+pb = [-0.3 -2.5 -5 -10 -11];
+kb_seguimento_alocacao = acker(A_nulo, B_nulo, pb);
+k_seguimento_alocacao = kb_seguimento_alocacao(1:4);
+ki_seguimento_alocacao = kb_seguimento_alocacao(5);
 
 
 
@@ -148,49 +145,54 @@ cz = [C 0 ];
 dz = 0 ;
 
 %% Observador de estados 
-polo_mais_rapido_do_sistema = min(real(eig(A)))
+polo_mais_rapido_do_sistema = min(real(eig(A)));
 
-polo_de_f = 1.5 * polo_mais_rapido_do_sistema
-sistema_f = (s - polo_de_f)^length(A)
-dem = sym2poly(sistema_f)
+polo_de_f = 1.5 * polo_mais_rapido_do_sistema;
+sistema_f = (s - polo_de_f)^length(A);
+dem = sym2poly(sistema_f);
 
-tf_sistema = tf(1,dem)
-[num, dem] = tfdata(tf_sistema, 'v')
-[F,lixo1,lixo2,lixo3] = tf2ss(num,dem)
-
-
-Lchp = [0; 0; 0; 1]
-
-estados_incontrolaveis = length(A) - rank(ctrb(F,Lchp))
+tf_sistema = tf(1,dem);
+[num, dem] = tfdata(tf_sistema, 'v');
+[F,lixo1,lixo2,lixo3] = tf2ss(num,dem);
 
 
-T = lyap(F, -A,Lchp*C)
-L_observador = inv(T)*Lchp
+Lchp = [0; 0; 0; 1];
+
+estados_incontrolaveis = length(A) - rank(ctrb(F,Lchp));
+
+
+T = lyap(F, -A,Lchp*C);
+L_observer = inv(T)*Lchp;
  
+R = 0.5;
+% observador com lqr
+L_observador_lqr = lqr(A',C',Q,R);
+L_observer = L_observador_lqr';
+L_observer = L_observer;
+
 
 %% MPC 
-mpc1 = load('mpc_session_designer_ball_and_beam_linear.mat')
-mpc1 = mpc1.MPCDesignerSession.AppData.Controllers.MPC 
+mpc1 = load('mpc_session_designer_ball_and_beam_linear.mat');
+mpc1 = mpc1.MPCDesignerSession.AppData.Controllers.MPC ;
 
-mpc_no_linear = load('mpc_session_designer_ball_and_beam_linear.mat')
-mpc_no_linear = mpc_no_linear.MPCDesignerSession.AppData.Controllers.MPC 
+mpc_no_linear = load('mpc_session_designer_ball_and_beam_linear.mat');
+mpc_no_linear = mpc_no_linear.MPCDesignerSession.AppData.Controllers.MPC ;
 
 
 %% PID 
-kp =-10 
-ki =-15
-kd = 1
-
+kp =-10 ;
+ki =-15;
+kd = 1;
 %% metricas de desempenho
 
-model ='model_linear';
-open_system(model)
-in = Simulink.SimulationInput(model);
-sim(in)
-Time = out.u_output.Time; 
-y_out  = out.y_output.Data;
-u_out = out.u_output.Data;
-acao_controle = out.acao_controle.Data;
-Time_acao_controle = out.acao_controle.Time;
+%model ='model_linear';
+%open_system(model)
+%in = Simulink.SimulationInput(model);
+%sim(in)
+%Time = out.u_output.Time; 
+%y_out  = out.y_output.Data;
+%u_out = out.u_output.Data;
+%acao_controle = out.acao_controle.Data;
+%Time_acao_controle = out.acao_controle.Time;
 
 
